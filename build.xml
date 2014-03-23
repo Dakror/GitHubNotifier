@@ -1,57 +1,86 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="GitHub Notifier">
+<project basedir="." default="build">
+    
+    <basename property="project.name" file="${basedir}"/>
 	<property environment="env" />
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.7" />
 	<property name="source" value="1.7" />
-	<path id="GitHub Notifier.classpath">
+	<property name="mainclass" value="ghnotifier.${project.name}" /> <!--  The only line that has to be changed -->
+	
+	<path id="classpath">
 		<pathelement location="bin" />
-		<pathelement location="libs/CodecWav.jar" />
-		<pathelement location="libs/LibraryJavaSound.jar" />
-		<pathelement location="libs/SoundSystem.jar" />
-		<pathelement location="libs/gson-2.2.4.jar" />
-		<pathelement location="libs/org.eclipse.egit.github.core-2.1.5.jar" />
+		<fileset dir="libs">
+			<include name="**/*.jar" />
+		</fileset>
 	</path>
-	<target name="init">
+	
+	<target name="build">	    
+		<delete file="${project.name}.jar" />
+
 		<mkdir dir="bin" />
+
 		<copy includeemptydirs="false" todir="bin">
-			<fileset dir="src">
+			<fileset dir="src/main/java">
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
-	</target>
-	<target name="clean">
-		<delete dir="bin" />
-	</target>
-	<target depends="clean" name="cleanall" />
-	<target depends="build-subprojects,build-project" name="build" />
-	<target name="build-subprojects" />
-	<target depends="init" name="build-project">
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src/main/resources">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="libs">
+				<include name="DakrorBin.jar" />
+			</fileset>
+		</copy>
+
 		<javac debug="true" debuglevel="${debuglevel}" destdir="bin"
 			includeantruntime="false" source="${source}" target="${target}">
-			<src path="src" />
-			<classpath refid="GitHub Notifier.classpath" />
+			<src path="src/main/java" />
+			<src path="src/main/resources" />
+			<classpath refid="classpath" />
 		</javac>
 
 		<tstamp>
 			<format property="DATE" pattern="dd.MM.yyyy HH:mm:ss" />
 		</tstamp>
 
-		<jar destfile="target/GitHub Notifier.jar" filesetmanifest="mergewithoutmain">
+		<script language="javascript">
+ 		<![CDATA[
+  		  property = project.setProperty("now", (new Date()).getTime());
+  		]]>
+		</script>
+
+		<jar destfile="${project.name}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="de.dakror.ghnotifier.GitHubNotifier" />
+				<attribute name="Main-Class" value="de.dakror.${mainclass}" />
 				<attribute name="Class-Path" value="." />
-				<attribute name="Application-Name" value="GitHub Notifier" />
+				<attribute name="Application-Name" value="${project.name}" />
 				<attribute name="Build-Date" value="${DATE}" />
 				<attribute name="Build-Timestamp" value="${now}" />
 				<attribute name="Permissions" value="all-permissions" />
 				<attribute name="Trusted-Only" value="true" />
 			</manifest>
-			<zipfileset excludes="META-INF/*.SF" src="libs/CodecWav.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="libs/LibraryJavaSound.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="libs/SoundSystem.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="libs/gson-2.2.4.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="libs/org.eclipse.egit.github.core-2.1.5.jar" />
+			<fileset dir="bin">
+				<exclude name="**/*.applet" />
+			</fileset>
+			<zipgroupfileset dir="libs" excludes="META-INF/*.SF" includes="**/*.jar" />
 		</jar>
+
+		<signjar jar="${project.name}.jar" keystore="http://dakror.de/bin/dakrorKeystore.jks" alias="dakror"
+			storepass="dakrorKeystore" />
+
+		<echo message="starting FTP file upload" />
+		<java classname="de.dakror.dakrorbin.DakrorBin">
+			<arg value="\"${project.name}\"" />
+			<classpath>
+				<pathelement location="bin/DakrorBin.jar" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
+		</java>
+
+		<delete dir="bin" />
 	</target>
 </project>
