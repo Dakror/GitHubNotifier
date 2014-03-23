@@ -47,9 +47,6 @@
 				<attribute name="Permissions" value="all-permissions" />
 				<attribute name="Trusted-Only" value="true" />
 			</manifest>
-			<fileset dir="bin">
-				<exclude name="**/*.applet" />
-			</fileset>
 			<zipfileset excludes="META-INF/*.SF" src="libs/CodecWav.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="libs/LibraryJavaSound.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="libs/SoundSystem.jar" />
