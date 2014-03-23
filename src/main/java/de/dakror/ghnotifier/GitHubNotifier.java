@@ -170,6 +170,8 @@ public class GitHubNotifier extends JFrame
 			setLocationRelativeTo(null);
 			setVisible(true);
 			
+			setTitle(getTitle() + " v" + new SimpleDateFormat("dd.MM.yy HH:mm:ss").format(DakrorBin.buildTimestamp));
+			
 			DakrorBin.checkForUpdates();
 		}
 		catch (Exception e1)
@@ -389,8 +391,6 @@ public class GitHubNotifier extends JFrame
 				panel = getUIForCommitCommentEvent(p, e);
 				break;
 			}
-			default:
-				System.out.println("Unhandled event: " + e.getType());
 		}
 		
 		if (panel != null)
