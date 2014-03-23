@@ -77,6 +77,7 @@ import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.codecs.CodecWav;
 import paulscode.sound.libraries.LibraryJavaSound;
+import de.dakror.dakrorbin.DakrorBin;
 
 public class GitHubNotifier extends JFrame
 {
@@ -141,7 +142,9 @@ public class GitHubNotifier extends JFrame
 	
 	public GitHubNotifier(final SoundSystem ss)
 	{
-		super("GitHub Notifier");
+		super("GitHubNotifier");
+		
+		DakrorBin.init(this, "GitHubNotifier");
 		
 		client = new GitHubClient();
 		
@@ -150,29 +153,29 @@ public class GitHubNotifier extends JFrame
 		try
 		{
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/octicons.ttf")).deriveFont(20f));
-			
 			loadRemindMe();
-			
 			DIR.mkdirs();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		addWindowListener(new WindowAdapter()
-		{
-			@Override
-			public void windowClosing(WindowEvent e)
+			
+			addWindowListener(new WindowAdapter()
 			{
-				ss.cleanup();
-			}
-		});
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setResizable(false);
-		init();
-		setLocationRelativeTo(null);
-		setVisible(true);
+				@Override
+				public void windowClosing(WindowEvent e)
+				{
+					ss.cleanup();
+				}
+			});
+			setDefaultCloseOperation(EXIT_ON_CLOSE);
+			setResizable(false);
+			init();
+			setLocationRelativeTo(null);
+			setVisible(true);
+			
+			DakrorBin.checkForUpdates();
+		}
+		catch (Exception e1)
+		{
+			e1.printStackTrace();
+		}
 	}
 	
 	public void init()
