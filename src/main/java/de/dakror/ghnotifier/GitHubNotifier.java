@@ -77,7 +77,6 @@ import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.codecs.CodecWav;
 import paulscode.sound.libraries.LibraryJavaSound;
-import de.dakror.dakrorbin.DakrorBin;
 
 public class GitHubNotifier extends JFrame
 {
@@ -144,8 +143,6 @@ public class GitHubNotifier extends JFrame
 	{
 		super("GitHubNotifier");
 		
-		DakrorBin.init(this, "GitHubNotifier");
-		
 		client = new GitHubClient();
 		
 		this.ss = ss;
@@ -169,10 +166,6 @@ public class GitHubNotifier extends JFrame
 			init();
 			setLocationRelativeTo(null);
 			setVisible(true);
-			
-			setTitle(getTitle() + " v" + new SimpleDateFormat("dd.MM.yy HH:mm:ss").format(DakrorBin.buildTimestamp));
-			
-			DakrorBin.checkForUpdates();
 		}
 		catch (Exception e1)
 		{
