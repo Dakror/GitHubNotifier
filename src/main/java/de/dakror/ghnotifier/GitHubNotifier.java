@@ -926,7 +926,7 @@ public class GitHubNotifier extends JFrame
 	public ArrayList<Event> getEvents()
 	{
 		EventService es = new EventService(client);
-		PageIterator<Event> pi = es.pageUserReceivedEvents(client.getUser());
+		PageIterator<Event> pi = es.pageUserReceivedEvents(client.getUser(), true, 30);
 		return new ArrayList<>(pi.next());
 	}
 	
