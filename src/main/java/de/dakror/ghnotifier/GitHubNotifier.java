@@ -78,35 +78,26 @@ import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.codecs.CodecWav;
 import paulscode.sound.libraries.LibraryJavaSound;
 
-public class GitHubNotifier extends JFrame
-{
-	class UpdateThread extends Thread
-	{
+public class GitHubNotifier extends JFrame {
+	class UpdateThread extends Thread {
 		long newest = 0;
 		
-		public UpdateThread()
-		{
+		public UpdateThread() {
 			newest = System.currentTimeMillis();
 		}
 		
 		@Override
-		public void run()
-		{
-			try
-			{
-				while (true)
-				{
+		public void run() {
+			try {
+				while (true) {
 					ArrayList<Event> arr = getEvents();
 					
-					for (int i = 0; i < arr.size(); i++)
-					{
-						if (arr.get(i).getCreatedAt().getTime() > newest)
-						{
+					for (int i = 0; i < arr.size(); i++) {
+						if (arr.get(i).getCreatedAt().getTime() > newest) {
 							ss.setMasterVolume(1.0f);
 							ss.quickPlay(true, getClass().getResource("/Notification.wav"), "Notification.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_ROLLOFF, SoundSystemConfig.getDefaultRolloff());
 							addEvent(arr.get(i), false);
-						}
-						else break;
+						} else break;
 					}
 					
 					newest = System.currentTimeMillis();
@@ -114,9 +105,7 @@ public class GitHubNotifier extends JFrame
 					System.gc();
 					Thread.sleep(5000);
 				}
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -139,25 +128,21 @@ public class GitHubNotifier extends JFrame
 	SoundSystem ss;
 	GitHubClient client;
 	
-	public GitHubNotifier(final SoundSystem ss)
-	{
+	public GitHubNotifier(final SoundSystem ss) {
 		super("GitHubNotifier");
 		
 		client = new GitHubClient();
 		
 		this.ss = ss;
 		
-		try
-		{
+		try {
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/octicons.ttf")).deriveFont(20f));
 			loadRemindMe();
 			DIR.mkdirs();
 			
-			addWindowListener(new WindowAdapter()
-			{
+			addWindowListener(new WindowAdapter() {
 				@Override
-				public void windowClosing(WindowEvent e)
-				{
+				public void windowClosing(WindowEvent e) {
 					ss.cleanup();
 				}
 			});
@@ -166,24 +151,19 @@ public class GitHubNotifier extends JFrame
 			init();
 			setLocationRelativeTo(null);
 			setVisible(true);
-		}
-		catch (Exception e1)
-		{
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 	}
 	
-	public void init()
-	{
+	public void init() {
 		JMenuBar menu = new JMenuBar();
 		JMenu f = new JMenu("Help");
-		f.add(new JMenuItem(new AbstractAction("Change User")
-		{
+		f.add(new JMenuItem(new AbstractAction("Change User") {
 			private static final long serialVersionUID = 1L;
 			
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				token = null;
 				saveRemindMe(false);
 				init();
@@ -196,8 +176,7 @@ public class GitHubNotifier extends JFrame
 		getContentPane().removeAll();
 		repaint();
 		
-		if (token == null)
-		{
+		if (token == null) {
 			JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
 			panel.setPreferredSize(new Dimension(250, 170));
 			JLabel l = new JLabel("Login", JLabel.CENTER);
@@ -223,23 +202,19 @@ public class GitHubNotifier extends JFrame
 			pwd.setPreferredSize(new Dimension(110, 20));
 			panel.add(pwd);
 			
-			DocumentListener dl = new DocumentListener()
-			{
+			DocumentListener dl = new DocumentListener() {
 				@Override
-				public void removeUpdate(DocumentEvent e)
-				{
+				public void removeUpdate(DocumentEvent e) {
 					go.setEnabled(usr.getText().length() > 0 && pwd.getPassword().length > 0);
 				}
 				
 				@Override
-				public void insertUpdate(DocumentEvent e)
-				{
+				public void insertUpdate(DocumentEvent e) {
 					go.setEnabled(usr.getText().length() > 0 && pwd.getPassword().length > 0);
 				}
 				
 				@Override
-				public void changedUpdate(DocumentEvent e)
-				{
+				public void changedUpdate(DocumentEvent e) {
 					go.setEnabled(usr.getText().length() > 0 && pwd.getPassword().length > 0);
 				}
 			};
@@ -253,23 +228,18 @@ public class GitHubNotifier extends JFrame
 			final JCheckBox rmd = new JCheckBox();
 			panel.add(rmd);
 			
-			go.addActionListener(new ActionListener()
-			{
+			go.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e)
-				{
-					try
-					{
+				public void actionPerformed(ActionEvent e) {
+					try {
 						client.setCredentials(usr.getText(), new String(pwd.getPassword()));
 						
 						Authorization auth = new Authorization();
 						auth.setNote("GitHub Notifier");
 						OAuthService oauth = new OAuthService(client);
 						boolean created = false;
-						for (Authorization a : oauth.getAuthorizations())
-						{
-							if (a.getNote() != null && a.getNote().equals(auth.getNote()))
-							{
+						for (Authorization a : oauth.getAuthorizations()) {
+							if (a.getNote() != null && a.getNote().equals(auth.getNote())) {
 								auth = a;
 								created = true;
 								break;
@@ -282,17 +252,12 @@ public class GitHubNotifier extends JFrame
 						saveRemindMe(rmd.isSelected());
 						
 						init();
-					}
-					catch (RequestException e1)
-					{
-						if (e1.getStatus() == 401)
-						{
+					} catch (RequestException e1) {
+						if (e1.getStatus() == 401) {
 							JOptionPane.showMessageDialog(GitHubNotifier.this, "Bad login!", "Error!", JOptionPane.ERROR_MESSAGE);
 							pwd.setText("");
 						}
-					}
-					catch (Exception e1)
-					{
+					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 					
@@ -303,9 +268,7 @@ public class GitHubNotifier extends JFrame
 			panel.add(go);
 			
 			setContentPane(panel);
-		}
-		else
-		{
+		} else {
 			Box list = Box.createVerticalBox();
 			JScrollPane listWrap = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			listWrap.setPreferredSize(new Dimension(600, 350));
@@ -320,11 +283,9 @@ public class GitHubNotifier extends JFrame
 		setLocationRelativeTo(null);
 	}
 	
-	public void loadRemindMe() throws Exception
-	{
+	public void loadRemindMe() throws Exception {
 		File file = new File(DIR, "login.txt");
-		if (file.exists())
-		{
+		if (file.exists()) {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String[] parts = br.readLine().trim().split(":");
 			br.close();
@@ -335,75 +296,59 @@ public class GitHubNotifier extends JFrame
 		}
 	}
 	
-	public void saveRemindMe(boolean remind)
-	{
+	public void saveRemindMe(boolean remind) {
 		File file = new File(DIR, "login.txt");
-		if (token == null || !remind)
-		{
+		if (token == null || !remind) {
 			file.delete();
 			return;
 		}
-		try
-		{
+		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 			bw.write(client.getUser() + ":" + token);
 			bw.close();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void addEvent(final Event e, boolean append) throws Exception
-	{
+	public void addEvent(final Event e, boolean append) throws Exception {
 		if (token == null) return;
 		
 		final JScrollPane p = (JScrollPane) getContentPane();
 		Box box = (Box) p.getViewport().getView();
 		JPanel panel = null;
-		switch (e.getType())
-		{
-			case "PushEvent":
-			{
+		switch (e.getType()) {
+			case "PushEvent": {
 				panel = getUIForPushEvent(p, e);
 				break;
 			}
-			case "IssueCommentEvent":
-			{
+			case "IssueCommentEvent": {
 				panel = getUIForIssueCommentEvent(p, e);
 				break;
 			}
-			case "IssuesEvent":
-			{
+			case "IssuesEvent": {
 				panel = getUIForIssuesEvent(p, e);
 				break;
 			}
-			case "CommitCommentEvent":
-			{
+			case "CommitCommentEvent": {
 				panel = getUIForCommitCommentEvent(p, e);
 				break;
 			}
 		}
 		
-		if (panel != null)
-		{
+		if (panel != null) {
 			final JPanel p1 = panel;
-			for (Component c1 : panel.getComponents())
-			{
-				c1.addMouseListener(new MouseAdapter()
-				{
+			for (Component c1 : panel.getComponents()) {
+				c1.addMouseListener(new MouseAdapter() {
 					@Override
-					public void mouseEntered(MouseEvent ev)
-					{
+					public void mouseEntered(MouseEvent ev) {
 						p1.setOpaque(true);
 						p1.setBackground(Color.decode("#292929"));
 						p1.setBorder(new RoundedBorder(Color.decode("#096ac8")));
 					}
 					
 					@Override
-					public void mouseExited(MouseEvent ev)
-					{
+					public void mouseExited(MouseEvent ev) {
 						p1.setOpaque(false);
 						p1.setBorder(new RoundedBorder(Color.black));
 					}
@@ -429,22 +374,18 @@ public class GitHubNotifier extends JFrame
 	
 	// -- UI functions -- //
 	
-	public JPanel getUIForPushEvent(final JScrollPane p, final Event e) throws Exception
-	{
+	public JPanel getUIForPushEvent(final JScrollPane p, final Event e) throws Exception {
 		final JPanel panel = new JPanel(null);
-		panel.addMouseListener(new MouseAdapter()
-		{
+		panel.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				panel.setOpaque(true);
 				panel.setBackground(Color.decode("#292929"));
 				panel.setBorder(new RoundedBorder(Color.decode("#096ac8")));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				panel.setOpaque(false);
 				panel.setBorder(new RoundedBorder(Color.black));
 			}
@@ -457,30 +398,23 @@ public class GitHubNotifier extends JFrame
 		title.setBounds(0, 0, w - 10, 40);
 		
 		TexturedPanel wrap = new TexturedPanel(getImage("ui-bg_diagonals-thick_15_0b3e6f_40x40.png"));
-		wrap.addMouseListener(new MouseAdapter()
-		{
+		wrap.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased(MouseEvent ev)
-			{
-				try
-				{
+			public void mouseReleased(MouseEvent ev) {
+				try {
 					Desktop.getDesktop().browse(new URL(((PushPayload) e.getPayload()).getCommits().get(0).getUrl().replace("api.", "").replace("/repos", "").replace("/commits", "/commit")).toURI());
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				GitHubNotifier.this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				GitHubNotifier.this.setCursor(Cursor.getDefaultCursor());
 			}
 		});
@@ -492,13 +426,10 @@ public class GitHubNotifier extends JFrame
 		desc.setVerticalAlignment(JLabel.TOP);
 		desc.setBounds(15, 50, w - 30, 100000);
 		final JScrollPane descScroll = new JScrollPane(desc, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		descScroll.addMouseWheelListener(new MouseWheelListener()
-		{
+		descScroll.addMouseWheelListener(new MouseWheelListener() {
 			@Override
-			public void mouseWheelMoved(MouseWheelEvent e)
-			{
-				if (descScroll.getViewport().getViewSize().height <= descScroll.getViewport().getVisibleRect().height)
-				{
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (descScroll.getViewport().getViewSize().height <= descScroll.getViewport().getVisibleRect().height) {
 					p.dispatchEvent(e);
 				}
 			}
@@ -525,21 +456,17 @@ public class GitHubNotifier extends JFrame
 		RepositoryId repid = RepositoryId.createFromUrl(e.getRepo().getUrl().replace("/repos", ""));
 		CommitService cs = new CommitService(client);
 		RepositoryCommit rc = cs.getCommit(repid, commit0.getSha());
-		for (int i = 0; i < rc.getFiles().size(); i++)
-		{
+		for (int i = 0; i < rc.getFiles().size(); i++) {
 			JLabel label = new JLabel("<html><body style='font-size:12px;'>" + getClass().getField("DIFF_" + rc.getFiles().get(i).getStatus().toUpperCase()).get(null) + "<span style='font-family:Courier;color:#4183c4;'>&nbsp;" + rc.getFiles().get(i).getFilename().substring(rc.getFiles().get(i).getFilename().lastIndexOf("/") + 1) + "</span></body></html>");
 			list.add(label);
 		}
 		final JScrollPane jsp = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		jsp.setBounds(w / 2 + 5, 50, w / 2 - 10, h - 50);
 		jsp.setOpaque(false);
-		jsp.addMouseWheelListener(new MouseWheelListener()
-		{
+		jsp.addMouseWheelListener(new MouseWheelListener() {
 			@Override
-			public void mouseWheelMoved(MouseWheelEvent e)
-			{
-				if (jsp.getViewport().getViewSize().height <= jsp.getViewport().getVisibleRect().height)
-				{
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (jsp.getViewport().getViewSize().height <= jsp.getViewport().getVisibleRect().height) {
 					p.dispatchEvent(e);
 				}
 			}
@@ -552,20 +479,15 @@ public class GitHubNotifier extends JFrame
 		
 		final JToggleButton toggle = new JToggleButton("Show Diff", false);
 		toggle.setBounds(15, h - 20, 80, 20);
-		toggle.addActionListener(new ActionListener()
-		{
+		toggle.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (toggle.isSelected())
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (toggle.isSelected()) {
 					toggle.setText("Hide Diff");
 					descScroll.setBounds(15, 50, w / 2 - 20, h - 70);
 					descScroll.getViewport().getView().setBounds(0, 0, w / 2 - 30, 100000);
-				}
-				else
-				{
+				} else {
 					toggle.setText("Show Diff");
 					descScroll.setBounds(15, 50, w - 20, h - 70);
 					descScroll.getViewport().getView().setBounds(0, 0, w - 30, 100000);
@@ -579,22 +501,18 @@ public class GitHubNotifier extends JFrame
 		return panel;
 	}
 	
-	public JPanel getUIForIssueCommentEvent(final JScrollPane p, final Event e) throws Exception
-	{
+	public JPanel getUIForIssueCommentEvent(final JScrollPane p, final Event e) throws Exception {
 		final JPanel panel = new JPanel(null);
-		panel.addMouseListener(new MouseAdapter()
-		{
+		panel.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				panel.setOpaque(true);
 				panel.setBackground(Color.decode("#292929"));
 				panel.setBorder(new RoundedBorder(Color.decode("#096ac8")));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				panel.setOpaque(false);
 				panel.setBorder(new RoundedBorder(Color.black));
 			}
@@ -607,30 +525,23 @@ public class GitHubNotifier extends JFrame
 		title.setBounds(0, 0, w - 10, 40);
 		
 		TexturedPanel wrap = new TexturedPanel(getImage("ui-bg_diagonals-thick_15_0b3e6f_40x40.png"));
-		wrap.addMouseListener(new MouseAdapter()
-		{
+		wrap.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased(MouseEvent ev)
-			{
-				try
-				{
+			public void mouseReleased(MouseEvent ev) {
+				try {
 					Desktop.getDesktop().browse(new URL("https://github.com/" + e.getRepo().getName() + "/issues/" + ((IssueCommentPayload) e.getPayload()).getIssue().getNumber() + "#issuecomment-" + ((IssueCommentPayload) e.getPayload()).getComment().getId()).toURI());
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				GitHubNotifier.this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				GitHubNotifier.this.setCursor(Cursor.getDefaultCursor());
 			}
 		});
@@ -644,34 +555,26 @@ public class GitHubNotifier extends JFrame
 		((HTMLDocument) desc.getDocument()).getStyleSheet().addRule("a {color:#9999ff;}");
 		desc.setEditable(false);
 		desc.setOpaque(false);
-		desc.addMouseListener(new MouseAdapter()
-		{
+		desc.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				panel.setOpaque(true);
 				panel.setBackground(Color.decode("#292929"));
 				panel.setBorder(new RoundedBorder(Color.decode("#096ac8")));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				panel.setOpaque(false);
 				panel.setBorder(new RoundedBorder(Color.black));
 			}
 		});
-		desc.addHyperlinkListener(new HyperlinkListener()
-		{
+		desc.addHyperlinkListener(new HyperlinkListener() {
 			@Override
-			public void hyperlinkUpdate(HyperlinkEvent e)
-			{
-				try
-				{
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				try {
 					if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) Desktop.getDesktop().browse(e.getURL().toURI());
-				}
-				catch (Exception e1)
-				{
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -679,13 +582,10 @@ public class GitHubNotifier extends JFrame
 		
 		desc.setBounds(15, 50, w - 30, 100000);
 		final JScrollPane descScroll = new JScrollPane(desc, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		descScroll.addMouseWheelListener(new MouseWheelListener()
-		{
+		descScroll.addMouseWheelListener(new MouseWheelListener() {
 			@Override
-			public void mouseWheelMoved(MouseWheelEvent e)
-			{
-				if (descScroll.getViewport().getViewSize().height <= descScroll.getViewport().getVisibleRect().height)
-				{
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (descScroll.getViewport().getViewSize().height <= descScroll.getViewport().getVisibleRect().height) {
 					p.dispatchEvent(e);
 				}
 			}
@@ -701,22 +601,18 @@ public class GitHubNotifier extends JFrame
 		return panel;
 	}
 	
-	public JPanel getUIForIssuesEvent(final JScrollPane p, final Event e) throws Exception
-	{
+	public JPanel getUIForIssuesEvent(final JScrollPane p, final Event e) throws Exception {
 		final JPanel panel = new JPanel(null);
-		panel.addMouseListener(new MouseAdapter()
-		{
+		panel.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				panel.setOpaque(true);
 				panel.setBackground(Color.decode("#292929"));
 				panel.setBorder(new RoundedBorder(Color.decode("#096ac8")));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				panel.setOpaque(false);
 				panel.setBorder(new RoundedBorder(Color.black));
 			}
@@ -729,30 +625,23 @@ public class GitHubNotifier extends JFrame
 		title.setBounds(0, 0, w - 10, 40);
 		
 		TexturedPanel wrap = new TexturedPanel(getImage("ui-bg_diagonals-thick_15_0b3e6f_40x40.png"));
-		wrap.addMouseListener(new MouseAdapter()
-		{
+		wrap.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased(MouseEvent ev)
-			{
-				try
-				{
+			public void mouseReleased(MouseEvent ev) {
+				try {
 					Desktop.getDesktop().browse(new URL("https://github.com/" + e.getRepo().getName() + "/issues/" + ((IssuesPayload) e.getPayload()).getIssue().getNumber()).toURI());
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				GitHubNotifier.this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				GitHubNotifier.this.setCursor(Cursor.getDefaultCursor());
 			}
 		});
@@ -764,13 +653,10 @@ public class GitHubNotifier extends JFrame
 		desc.setVerticalAlignment(JLabel.TOP);
 		desc.setBounds(15, 50, w - 30, 100000);
 		final JScrollPane descScroll = new JScrollPane(desc, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		descScroll.addMouseWheelListener(new MouseWheelListener()
-		{
+		descScroll.addMouseWheelListener(new MouseWheelListener() {
 			@Override
-			public void mouseWheelMoved(MouseWheelEvent e)
-			{
-				if (descScroll.getViewport().getViewSize().height <= descScroll.getViewport().getVisibleRect().height)
-				{
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (descScroll.getViewport().getViewSize().height <= descScroll.getViewport().getVisibleRect().height) {
 					p.dispatchEvent(e);
 				}
 			}
@@ -786,22 +672,18 @@ public class GitHubNotifier extends JFrame
 		return panel;
 	}
 	
-	public JPanel getUIForCommitCommentEvent(final JScrollPane p, final Event e) throws Exception
-	{
+	public JPanel getUIForCommitCommentEvent(final JScrollPane p, final Event e) throws Exception {
 		final JPanel panel = new JPanel(null);
-		panel.addMouseListener(new MouseAdapter()
-		{
+		panel.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				panel.setOpaque(true);
 				panel.setBackground(Color.decode("#292929"));
 				panel.setBorder(new RoundedBorder(Color.decode("#096ac8")));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				panel.setOpaque(false);
 				panel.setBorder(new RoundedBorder(Color.black));
 			}
@@ -814,30 +696,23 @@ public class GitHubNotifier extends JFrame
 		title.setBounds(0, 0, w - 10, 40);
 		
 		TexturedPanel wrap = new TexturedPanel(getImage("ui-bg_diagonals-thick_15_0b3e6f_40x40.png"));
-		wrap.addMouseListener(new MouseAdapter()
-		{
+		wrap.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased(MouseEvent ev)
-			{
-				try
-				{
+			public void mouseReleased(MouseEvent ev) {
+				try {
 					Desktop.getDesktop().browse(new URL(((CommitCommentPayload) e.getPayload()).getComment().getUrl()).toURI());
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				GitHubNotifier.this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				GitHubNotifier.this.setCursor(Cursor.getDefaultCursor());
 			}
 		});
@@ -851,47 +726,36 @@ public class GitHubNotifier extends JFrame
 		((HTMLDocument) desc.getDocument()).getStyleSheet().addRule("a {color:#9999ff;}");
 		desc.setEditable(false);
 		desc.setOpaque(false);
-		desc.addMouseListener(new MouseAdapter()
-		{
+		desc.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent ev)
-			{
+			public void mouseEntered(MouseEvent ev) {
 				panel.setOpaque(true);
 				panel.setBackground(Color.decode("#292929"));
 				panel.setBorder(new RoundedBorder(Color.decode("#096ac8")));
 			}
 			
 			@Override
-			public void mouseExited(MouseEvent ev)
-			{
+			public void mouseExited(MouseEvent ev) {
 				panel.setOpaque(false);
 				panel.setBorder(new RoundedBorder(Color.black));
 			}
 		});
-		desc.addHyperlinkListener(new HyperlinkListener()
-		{
+		desc.addHyperlinkListener(new HyperlinkListener() {
 			@Override
-			public void hyperlinkUpdate(HyperlinkEvent e)
-			{
-				try
-				{
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				try {
 					if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) Desktop.getDesktop().browse(e.getURL().toURI());
-				}
-				catch (Exception e1)
-				{
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
 		desc.setBounds(15, 50, w - 30, 100000);
 		final JScrollPane descScroll = new JScrollPane(desc, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		descScroll.addMouseWheelListener(new MouseWheelListener()
-		{
+		descScroll.addMouseWheelListener(new MouseWheelListener() {
 			@Override
-			public void mouseWheelMoved(MouseWheelEvent e)
-			{
-				if (descScroll.getViewport().getViewSize().height <= descScroll.getViewport().getVisibleRect().height)
-				{
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (descScroll.getViewport().getViewSize().height <= descScroll.getViewport().getVisibleRect().height) {
 					p.dispatchEvent(e);
 				}
 			}
@@ -909,45 +773,34 @@ public class GitHubNotifier extends JFrame
 	
 	// -- //
 	
-	public Image getImage(String s)
-	{
-		try
-		{
+	public Image getImage(String s) {
+		try {
 			return ImageIO.read(getClass().getResource("/img/" + s));
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 	
 	// -- GitHub functions -- //
-	public ArrayList<Event> getEvents()
-	{
+	public ArrayList<Event> getEvents() {
 		EventService es = new EventService(client);
 		PageIterator<Event> pi = es.pageUserReceivedEvents(client.getUser(), true, 30);
 		return new ArrayList<>(pi.next());
 	}
 	
-	public void loadEvents()
-	{
-		new Thread()
-		{
+	public void loadEvents() {
+		new Thread() {
 			@Override
-			public void run()
-			{
-				try
-				{
+			public void run() {
+				try {
 					ArrayList<Event> page = getEvents();
 					
 					for (int i = 0; i < page.size(); i++)
 						addEvent(page.get(i), true);
 					
 					new UpdateThread().start();
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -956,35 +809,27 @@ public class GitHubNotifier extends JFrame
 	
 	// -- static functions -- //
 	
-	public static String getURLContent(InputStream is)
-	{
+	public static String getURLContent(InputStream is) {
 		String res = "", line = "";
-		try
-		{
+		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			while ((line = br.readLine()) != null)
 				res += line + "\r\n";
 			br.close();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			return null;
 		}
 		return res;
 	}
 	
-	public static void main(String[] args)
-	{
-		try
-		{
+	public static void main(String[] args) {
+		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			SoundSystemConfig.addLibrary(LibraryJavaSound.class);
 			SoundSystemConfig.setCodec("wav", CodecWav.class);
 			SoundSystem ss = new SoundSystem(LibraryJavaSound.class);
 			new GitHubNotifier(ss);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

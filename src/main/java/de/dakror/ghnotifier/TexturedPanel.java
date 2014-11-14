@@ -1,11 +1,11 @@
 package de.dakror.ghnotifier;
 
 /*
- *  TexturedPanel.java
- *  2006-11-02
+ * TexturedPanel.java
+ * 2006-11-02
  */
 
-//cb.aloe.decor;
+// cb.aloe.decor;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -24,8 +24,7 @@ import javax.swing.JPanel;
  * 
  * @author Christopher Bach
  */
-public class TexturedPanel extends JPanel
-{
+public class TexturedPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private TexturePaint ourPainter = null;
@@ -37,8 +36,7 @@ public class TexturedPanel extends JPanel
 	/**
 	 * Creates a new TexturedPanel with a simple striped pattern.
 	 */
-	public TexturedPanel()
-	{
+	public TexturedPanel() {
 		super();
 		ourDefaultForeground = Color.white;
 		ourDefaultBackground = getBackground();
@@ -49,8 +47,7 @@ public class TexturedPanel extends JPanel
 	 * Creates a new TexturedPanel with a simple striped pattern consisting of the
 	 * given foreground and background colors.
 	 */
-	public TexturedPanel(Color foreground, Color background)
-	{
+	public TexturedPanel(Color foreground, Color background) {
 		super();
 		ourDefaultForeground = (foreground != null ? foreground : Color.white);
 		ourDefaultBackground = (background != null ? background : getBackground());
@@ -62,8 +59,7 @@ public class TexturedPanel extends JPanel
 	 * Creates a new TexturedPanel with a simple pattern based on the provided
 	 * texture map and consisting of the given foreground and background colors.
 	 */
-	public TexturedPanel(Color foreground, Color background, boolean[][] texture)
-	{
+	public TexturedPanel(Color foreground, Color background, boolean[][] texture) {
 		super();
 		ourDefaultForeground = (foreground != null ? foreground : Color.white);
 		ourDefaultBackground = (background != null ? background : getBackground());
@@ -75,8 +71,7 @@ public class TexturedPanel extends JPanel
 	 * Creates a new TexturedPanel with a simple pattern based on the provided
 	 * texture map and consisting of the given foreground and background colors.
 	 */
-	public TexturedPanel(Color foreground, Color background, boolean[][] texture, int scale)
-	{
+	public TexturedPanel(Color foreground, Color background, boolean[][] texture, int scale) {
 		super();
 		ourDefaultForeground = (foreground != null ? foreground : Color.white);
 		ourDefaultBackground = (background != null ? background : getBackground());
@@ -87,8 +82,7 @@ public class TexturedPanel extends JPanel
 	/**
 	 * Creates a new TexturedPanel that tiles the provided image.
 	 */
-	public TexturedPanel(Image texture)
-	{
+	public TexturedPanel(Image texture) {
 		super();
 		ourDefaultForeground = Color.white;
 		ourDefaultBackground = getBackground();
@@ -100,14 +94,12 @@ public class TexturedPanel extends JPanel
 	/**
 	 * Creates a new TexturedPanel that tiles the provided icon.
 	 */
-	public TexturedPanel(Icon textureIcon)
-	{
+	public TexturedPanel(Icon textureIcon) {
 		super();
 		ourDefaultForeground = Color.white;
 		ourDefaultBackground = getBackground();
 		
-		if (textureIcon != null)
-		{
+		if (textureIcon != null) {
 			setupIconPainter(textureIcon);
 		}
 		
@@ -118,10 +110,8 @@ public class TexturedPanel extends JPanel
 	 * Sets up this TexturedPanel to paint a simple background based on the
 	 * provided texture and consisting of the provided colors.
 	 */
-	public void setTexture(Color foreground, Color background, boolean[][] texture)
-	{
-		if (foreground != null && background != null && texture != null && texture.length > 0 && texture[0].length > 0)
-		{
+	public void setTexture(Color foreground, Color background, boolean[][] texture) {
+		if (foreground != null && background != null && texture != null && texture.length > 0 && texture[0].length > 0) {
 			setupTexturePainter(foreground, background, texture, 1);
 		}
 	}
@@ -129,8 +119,7 @@ public class TexturedPanel extends JPanel
 	/**
    * 
    */
-	public void setTexture(Color foreground, Color background, boolean[][] texture, int scale)
-	{
+	public void setTexture(Color foreground, Color background, boolean[][] texture, int scale) {
 		setupTexturePainter(foreground, background, texture, scale);
 	}
 	
@@ -138,10 +127,8 @@ public class TexturedPanel extends JPanel
 	 * Sets up this TexturedPanel to paint a striped background consisting of the
 	 * provided colors.
 	 */
-	public void setTextureColors(Color foreground, Color background)
-	{
-		if (foreground != null && background != null)
-		{
+	public void setTextureColors(Color foreground, Color background) {
+		if (foreground != null && background != null) {
 			ourDefaultForeground = foreground;
 			ourDefaultBackground = background;
 			setupDefaultPainter(foreground, background);
@@ -153,8 +140,7 @@ public class TexturedPanel extends JPanel
 	 * provided image. If the image is null, the background will revert to a
 	 * striped texture consisting of the last known colors.
 	 */
-	public void setTextureImage(Image texture)
-	{
+	public void setTextureImage(Image texture) {
 		if (texture != null) setupImagePainter(texture);
 		else setupDefaultPainter(ourDefaultForeground, ourDefaultBackground);
 	}
@@ -164,10 +150,8 @@ public class TexturedPanel extends JPanel
 	 * provided icon. If the icon is null, the background will revert to a striped
 	 * texture consisting of the last known colors.
 	 */
-	public void setTextureIcon(Icon textureIcon)
-	{
-		if (textureIcon != null)
-		{
+	public void setTextureIcon(Icon textureIcon) {
+		if (textureIcon != null) {
 			setupIconPainter(textureIcon);
 		}
 		
@@ -177,8 +161,7 @@ public class TexturedPanel extends JPanel
 	/**
 	 * Returns the image buffer used by this TexturedPanel's painter.
 	 */
-	public Image getTexture()
-	{
+	public Image getTexture() {
 		if (ourPainter == null) return null;
 		else return ourPainter.getImage();
 	}
@@ -186,10 +169,8 @@ public class TexturedPanel extends JPanel
 	/**
 	 * Creates a new TexturePaint using the provided colors.
 	 */
-	private void setupDefaultPainter(Color foreground, Color background)
-	{
-		if (foreground == null || background == null)
-		{
+	private void setupDefaultPainter(Color foreground, Color background) {
+		if (foreground == null || background == null) {
 			ourPainter = null;
 			return;
 		}
@@ -213,16 +194,13 @@ public class TexturedPanel extends JPanel
 	/**
 	 * Creates a new TexturePaint using the provided colors and texture map.
 	 */
-	private void setupTexturePainter(Color foreground, Color background, boolean[][] texture, int scale)
-	{
-		if (texture == null || texture.length < 1 || texture[0].length < 1)
-		{
+	private void setupTexturePainter(Color foreground, Color background, boolean[][] texture, int scale) {
+		if (texture == null || texture.length < 1 || texture[0].length < 1) {
 			setupDefaultPainter(foreground, background);
 			return;
 		}
 		
-		else if (foreground == null || background == null)
-		{
+		else if (foreground == null || background == null) {
 			ourPainter = null;
 			return;
 		}
@@ -239,17 +217,13 @@ public class TexturedPanel extends JPanel
 		g2.fillRect(0, 0, w * scale, h * scale);
 		
 		g2.setColor(foreground);
-		for (int i = 0; i < h; i++)
-		{
-			for (int j = 0; j < w; j++)
-			{
-				try
-				{
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				try {
 					if (texture[i][j]) g2.fillRect(j * scale, i * scale, scale, scale);
 				}
 				// g2.drawLine(j, i, j, i); }
-				catch (ArrayIndexOutOfBoundsException aob)
-				{}
+				catch (ArrayIndexOutOfBoundsException aob) {}
 			}
 		}
 		
@@ -261,10 +235,8 @@ public class TexturedPanel extends JPanel
 	/**
 	 * Creates a new TexturePaint using the provided image.
 	 */
-	private void setupImagePainter(Image texture)
-	{
-		if (texture == null)
-		{
+	private void setupImagePainter(Image texture) {
+		if (texture == null) {
 			ourPainter = null;
 			return;
 		}
@@ -272,8 +244,7 @@ public class TexturedPanel extends JPanel
 		int w = texture.getWidth(this);
 		int h = texture.getHeight(this);
 		
-		if (w <= 0 || h <= 0)
-		{
+		if (w <= 0 || h <= 0) {
 			ourPainter = null;
 			return;
 		}
@@ -290,10 +261,8 @@ public class TexturedPanel extends JPanel
 	/**
 	 * Creates a new TexturePaint using the provided icon.
 	 */
-	private void setupIconPainter(Icon texture)
-	{
-		if (texture == null)
-		{
+	private void setupIconPainter(Icon texture) {
+		if (texture == null) {
 			ourPainter = null;
 			return;
 		}
@@ -301,8 +270,7 @@ public class TexturedPanel extends JPanel
 		int w = texture.getIconWidth();
 		int h = texture.getIconHeight();
 		
-		if (w <= 0 || h <= 0)
-		{
+		if (w <= 0 || h <= 0) {
 			ourPainter = null;
 			return;
 		}
@@ -320,12 +288,10 @@ public class TexturedPanel extends JPanel
 	 * Paints this component with its textured background.
 	 */
 	@Override
-	protected void paintComponent(Graphics g)
-	{
+	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		if (ourPainter != null)
-		{
+		if (ourPainter != null) {
 			int w = getWidth();
 			int h = getHeight();
 			Insets in = getInsets();
@@ -335,8 +301,7 @@ public class TexturedPanel extends JPanel
 			w = w - in.left - in.right;
 			h = h - in.top - in.bottom;
 			
-			if (w >= 0 && h >= 0)
-			{
+			if (w >= 0 && h >= 0) {
 				Graphics2D g2 = (Graphics2D) g;
 				Paint pt = g2.getPaint();
 				g2.setPaint(ourPainter);
