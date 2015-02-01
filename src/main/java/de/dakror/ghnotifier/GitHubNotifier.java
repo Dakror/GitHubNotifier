@@ -95,7 +95,8 @@ public class GitHubNotifier extends JFrame {
 					for (int i = 0; i < arr.size(); i++) {
 						if (arr.get(i).getCreatedAt().getTime() > newest) {
 							ss.setMasterVolume(1.0f);
-							ss.quickPlay(true, getClass().getResource("/Notification.wav"), "Notification.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_ROLLOFF, SoundSystemConfig.getDefaultRolloff());
+							ss.quickPlay(	true, getClass().getResource("/Notification.wav"), "Notification.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_ROLLOFF,
+														SoundSystemConfig.getDefaultRolloff());
 							addEvent(arr.get(i), false);
 						} else break;
 					}
@@ -394,7 +395,8 @@ public class GitHubNotifier extends JFrame {
 		panel.setBorder(new RoundedBorder(Color.black));
 		
 		panel.setPreferredSize(new Dimension(w, h));
-		JLabel title = new JLabel("<html><body style='font-family:Arial;font-weight:bold;color:#f6f6f6;padding-left:6px;font-size:13px;'>" + e.getActor().getLogin() + " pushed to " + ((PushPayload) e.getPayload()).getRef().substring(((PushPayload) e.getPayload()).getRef().lastIndexOf("/") + 1) + " at " + e.getRepo().getName() + "</body></html>");
+		JLabel title = new JLabel("<html><body style='font-family:Arial;font-weight:bold;color:#f6f6f6;padding-left:6px;font-size:13px;'>" + e.getActor().getLogin() + " pushed to "
+				+ ((PushPayload) e.getPayload()).getRef().substring(((PushPayload) e.getPayload()).getRef().lastIndexOf("/") + 1) + " at " + e.getRepo().getName() + "</body></html>");
 		title.setBounds(0, 0, w - 10, 40);
 		
 		TexturedPanel wrap = new TexturedPanel(getImage("ui-bg_diagonals-thick_15_0b3e6f_40x40.png"));
@@ -422,7 +424,8 @@ public class GitHubNotifier extends JFrame {
 		wrap.add(title);
 		wrap.setBounds(5, 5, w - 10, 40);
 		panel.add(wrap);
-		final JLabel desc = new JLabel("<html><body style=\"color: #d9d9d9;font-size:12px\">" + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(e.getCreatedAt()) + ": " + ((PushPayload) e.getPayload()).getCommits().get(0).getMessage() + "</body></html>");
+		final JLabel desc = new JLabel("<html><body style=\"color: #d9d9d9;font-size:12px\">" + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(e.getCreatedAt()) + ": "
+				+ ((PushPayload) e.getPayload()).getCommits().get(0).getMessage() + "</body></html>");
 		desc.setVerticalAlignment(JLabel.TOP);
 		desc.setBounds(15, 50, w - 30, 100000);
 		final JScrollPane descScroll = new JScrollPane(desc, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -457,7 +460,9 @@ public class GitHubNotifier extends JFrame {
 		CommitService cs = new CommitService(client);
 		RepositoryCommit rc = cs.getCommit(repid, commit0.getSha());
 		for (int i = 0; i < rc.getFiles().size(); i++) {
-			JLabel label = new JLabel("<html><body style='font-size:12px;'>" + getClass().getField("DIFF_" + rc.getFiles().get(i).getStatus().toUpperCase()).get(null) + "<span style='font-family:Courier;color:#4183c4;'>&nbsp;" + rc.getFiles().get(i).getFilename().substring(rc.getFiles().get(i).getFilename().lastIndexOf("/") + 1) + "</span></body></html>");
+			JLabel label = new JLabel("<html><body style='font-size:12px;'>" + getClass().getField("DIFF_" + rc.getFiles().get(i).getStatus().toUpperCase()).get(null)
+					+ "<span style='font-family:Courier;color:#4183c4;'>&nbsp;" + rc.getFiles().get(i).getFilename().substring(rc.getFiles().get(i).getFilename().lastIndexOf("/") + 1)
+					+ "</span></body></html>");
 			list.add(label);
 		}
 		final JScrollPane jsp = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -521,7 +526,8 @@ public class GitHubNotifier extends JFrame {
 		panel.setBorder(new RoundedBorder(Color.black));
 		
 		panel.setPreferredSize(new Dimension(w, h));
-		JLabel title = new JLabel("<html><body style='font-family:Arial;font-weight:bold;color:#f6f6f6;padding-left:6px;font-size:13px;'>" + e.getActor().getLogin() + " commented on issue " + e.getRepo().getName() + "#" + ((IssueCommentPayload) e.getPayload()).getIssue().getNumber() + "</body></html>");
+		JLabel title = new JLabel("<html><body style='font-family:Arial;font-weight:bold;color:#f6f6f6;padding-left:6px;font-size:13px;'>" + e.getActor().getLogin()
+				+ " commented on issue " + e.getRepo().getName() + "#" + ((IssueCommentPayload) e.getPayload()).getIssue().getNumber() + "</body></html>");
 		title.setBounds(0, 0, w - 10, 40);
 		
 		TexturedPanel wrap = new TexturedPanel(getImage("ui-bg_diagonals-thick_15_0b3e6f_40x40.png"));
@@ -529,7 +535,8 @@ public class GitHubNotifier extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent ev) {
 				try {
-					Desktop.getDesktop().browse(new URL("https://github.com/" + e.getRepo().getName() + "/issues/" + ((IssueCommentPayload) e.getPayload()).getIssue().getNumber() + "#issuecomment-" + ((IssueCommentPayload) e.getPayload()).getComment().getId()).toURI());
+					Desktop.getDesktop().browse(new URL("https://github.com/" + e.getRepo().getName() + "/issues/" + ((IssueCommentPayload) e.getPayload()).getIssue().getNumber()
+																					+ "#issuecomment-" + ((IssueCommentPayload) e.getPayload()).getComment().getId()).toURI());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -551,7 +558,8 @@ public class GitHubNotifier extends JFrame {
 		panel.add(wrap);
 		final JEditorPane desc = new JEditorPane();
 		desc.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
-		desc.setText("<html><body style=\"color: #d9d9d9;font-size:12px;font-family:Arial;\">" + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(e.getCreatedAt()) + ": " + new MarkdownService(client).getHtml(((IssueCommentPayload) e.getPayload()).getComment().getBody(), MarkdownService.MODE_GFM).substring(3) + "</body></html>");
+		desc.setText("<html><body style=\"color: #d9d9d9;font-size:12px;font-family:Arial;\">" + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(e.getCreatedAt()) + ": "
+				+ new MarkdownService(client).getHtml(((IssueCommentPayload) e.getPayload()).getComment().getBody(), MarkdownService.MODE_GFM).substring(3) + "</body></html>");
 		((HTMLDocument) desc.getDocument()).getStyleSheet().addRule("a {color:#9999ff;}");
 		desc.setEditable(false);
 		desc.setOpaque(false);
@@ -621,7 +629,8 @@ public class GitHubNotifier extends JFrame {
 		panel.setBorder(new RoundedBorder(Color.black));
 		
 		panel.setPreferredSize(new Dimension(w, h));
-		JLabel title = new JLabel("<html><body style='font-family:Arial;font-weight:bold;color:#f6f6f6;padding-left:6px;font-size:13px;'>" + e.getActor().getLogin() + " openend issue " + e.getRepo().getName() + "#" + ((IssuesPayload) e.getPayload()).getIssue().getNumber() + "</body></html>");
+		JLabel title = new JLabel("<html><body style='font-family:Arial;font-weight:bold;color:#f6f6f6;padding-left:6px;font-size:13px;'>" + e.getActor().getLogin()
+				+ " openend issue " + e.getRepo().getName() + "#" + ((IssuesPayload) e.getPayload()).getIssue().getNumber() + "</body></html>");
 		title.setBounds(0, 0, w - 10, 40);
 		
 		TexturedPanel wrap = new TexturedPanel(getImage("ui-bg_diagonals-thick_15_0b3e6f_40x40.png"));
@@ -649,7 +658,8 @@ public class GitHubNotifier extends JFrame {
 		wrap.add(title);
 		wrap.setBounds(5, 5, w - 10, 40);
 		panel.add(wrap);
-		final JLabel desc = new JLabel("<html><body style=\"color: #d9d9d9;font-size:12px\">" + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(e.getCreatedAt()) + ": " + ((IssuesPayload) e.getPayload()).getIssue().getTitle() + "</body></html>");
+		final JLabel desc = new JLabel("<html><body style=\"color: #d9d9d9;font-size:12px\">" + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(e.getCreatedAt()) + ": "
+				+ ((IssuesPayload) e.getPayload()).getIssue().getTitle() + "</body></html>");
 		desc.setVerticalAlignment(JLabel.TOP);
 		desc.setBounds(15, 50, w - 30, 100000);
 		final JScrollPane descScroll = new JScrollPane(desc, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -692,7 +702,8 @@ public class GitHubNotifier extends JFrame {
 		panel.setBorder(new RoundedBorder(Color.black));
 		
 		panel.setPreferredSize(new Dimension(w, h));
-		JLabel title = new JLabel("<html><body style='font-family:Arial;font-weight:bold;color:#f6f6f6;padding-left:6px;font-size:13px;'>" + e.getActor().getLogin() + " commented on commit " + e.getRepo().getName() + "@" + ((CommitCommentPayload) e.getPayload()).getComment().getCommitId().substring(0, 10) + "</body></html>");
+		JLabel title = new JLabel("<html><body style='font-family:Arial;font-weight:bold;color:#f6f6f6;padding-left:6px;font-size:13px;'>" + e.getActor().getLogin()
+				+ " commented on commit " + e.getRepo().getName() + "@" + ((CommitCommentPayload) e.getPayload()).getComment().getCommitId().substring(0, 10) + "</body></html>");
 		title.setBounds(0, 0, w - 10, 40);
 		
 		TexturedPanel wrap = new TexturedPanel(getImage("ui-bg_diagonals-thick_15_0b3e6f_40x40.png"));
@@ -722,7 +733,8 @@ public class GitHubNotifier extends JFrame {
 		panel.add(wrap);
 		final JEditorPane desc = new JEditorPane();
 		desc.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
-		desc.setText("<html><body style=\"color: #d9d9d9;font-size:12px;font-family:Arial;\">" + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(e.getCreatedAt()) + ": " + new MarkdownService(client).getHtml(((CommitCommentPayload) e.getPayload()).getComment().getBody(), MarkdownService.MODE_GFM).substring(3) + "</body></html>");
+		desc.setText("<html><body style=\"color: #d9d9d9;font-size:12px;font-family:Arial;\">" + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(e.getCreatedAt()) + ": "
+				+ new MarkdownService(client).getHtml(((CommitCommentPayload) e.getPayload()).getComment().getBody(), MarkdownService.MODE_GFM).substring(3) + "</body></html>");
 		((HTMLDocument) desc.getDocument()).getStyleSheet().addRule("a {color:#9999ff;}");
 		desc.setEditable(false);
 		desc.setOpaque(false);
