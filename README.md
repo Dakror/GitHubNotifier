@@ -2,5 +2,3 @@ GitHub-Notifier [![Build Status](https://travis-ci.org/Dakror/GitHubNotifier.svg
 ===============
 
 A live notification client for github
-
-Download it here: [dakror.de](http://dakror.de/download?u=bin/GitHubNotifier.jar)
